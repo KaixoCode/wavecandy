@@ -1,0 +1,121 @@
+body {
+    background-color: #111;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100vw;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Roboto', 'Arial', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#init-device {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    justify-content: stretch;
+    width: 320px;
+    margin-bottom: 0.2em;
+}
+
+#analyzer-settings {
+    margin: 5px;
+    width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 3em;
+}
+
+#selected-component {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 400px;
+}
+
+input {
+    color: #fff;
+    border: none;
+    background-color: #fff1;
+    padding: 5px;
+    outline: none;
+}
+
+select,
+button {
+    border: 0;
+    color: #fff;
+    background-color: #555;
+    padding: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin: 2px 0px 2px 0px;
+    outline: none;
+}
+
+.delete-button {
+    background-color: rgb(129, 29, 29);
+}
+
+.delete-button:hover {
+    background-color: rgb(161, 41, 41);
+}
+
+input[type="button"].active {
+    background-color: rgb(75, 131, 236);
+}
+
+input[type="button"],
+button:hover {
+    background-color: #666;
+    cursor: pointer;
+}
+
+input[type="button"].active:hover {
+    background-color: rgb(116, 160, 241);
+}
+
+.settings-title {
+    font-size: 1.3em;
+    margin-bottom: 0.3em;
+}
+
+input[type="color"] {
+    padding: 0;
+}
+
+.settings-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    background-color: #191919;
+    padding: 6px 16px 6px 16px;
+    flex-basis: 0;
+    margin: 4px;
+}
+
+.settings-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #aaa;
+}
