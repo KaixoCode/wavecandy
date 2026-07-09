@@ -20,7 +20,7 @@ class Spectrum extends AudioWorkletProcessor {
       if (event.data.fftSize) {
         this.fftSize = Math.max(32, event.data.fftSize);
         this.frameBuffer = new Float32Array(this.fftSize);
-        this.window = event.data.window;
+        this.window = Math.max(1, event.data.window);
         this.hopSize = Math.max(1, Math.floor(sampleRate * this.window / 1000.0));
         this.frameBufferIndex = 0;
         this.frameBufferFill = 0;
