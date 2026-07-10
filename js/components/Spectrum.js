@@ -37,6 +37,7 @@ class Spectrum extends Component {
 
     this.oversample = 3;
 
+    this.settings.slide = settings.slide || 1;
     this.settings.window = settings.window || 5;
     this.settings.log = settings.log || false;
     this.settings.enhanced = settings.enhanced || false;
@@ -46,28 +47,18 @@ class Spectrum extends Component {
       [0, 0, 0, 0], [60, 60, 179, 120], [239, 15, 0, 200], [255, 255, 40, 255], [255, 255, 255, 255]
     ];
 
-    // Create the canvas to draw on
-    this.extraCanvas = document.createElement('canvas');
-    this.extraContext = this.extraCanvas.getContext('2d');
-    this.extraCanvas.width = position[2];
-    this.extraCanvas.height = position[3];
-    this.extraCanvas.imageSmoothingEnabled = false;
-    this.extraContext.imageSmoothingQuality = 'high';
-
     this.pixels = new Array(position[3]).fill(this.settings.range);
+    this.prevPixels = new Array(position[3]).fill(this.settings.range);
 
     // When the element is resized, the canvas should also resize
     this.element.resizeCallback = (w, h) => {
       this.canvas.width = w;
       this.canvas.height = h;
-      this.extraCanvas.width = w;
-      this.extraCanvas.height = h;
 
       this.pixels = new Array(h).fill(this.settings.range);
     };
 
     this.oversampleCounter = 0;
-    this.pixels = null;
 
     this.drawCursor = 0;
     this.updateColorLookup();
@@ -107,9 +98,7 @@ class Spectrum extends Component {
     const minFreq = 5e-4;
     const maxFreq = nyquist;
     const useEnhanced = !!this.settings.enhanced;
-
-    this.context.globalCompositeOperation = "copy";
-    this.context.drawImage(this.extraCanvas, 0, 0, width, height);
+    const slide = this.settings.slide;
 
     const getColor = (value) => {
       const clamped = clamp(value, minDb, maxDb);
@@ -207,22 +196,29 @@ class Spectrum extends Component {
     }
 
     if (drawNextLine) {
-      this.extraContext.globalCompositeOperation = "copy";
-      this.extraContext.drawImage(this.extraCanvas, -1, 0);
-      this.extraContext.globalCompositeOperation = "source-over";
-      this.currentImage = new ImageData(1, height);
+      this.context.globalCompositeOperation = "copy";
+      this.context.drawImage(this.canvas, -slide, 0);
+      this.context.globalCompositeOperation = "source-over";
+      this.currentImage = new ImageData(slide, height);
 
-      for (let y = 0; y < height; ++y) {
-        const color = getColor(this.pixels[y] || minDb);
-        const pixelIndex = y * 4;
-        this.currentImage.data[pixelIndex] = color[0];
-        this.currentImage.data[pixelIndex + 1] = color[1];
-        this.currentImage.data[pixelIndex + 2] = color[2];
-        this.currentImage.data[pixelIndex + 3] = color[3];
+      for (let x = 0; x < slide; ++x) {
+        const lerp = (x + 1) / slide;
+        for (let y = 0; y < height; ++y) {
+          const decibelsA = this.prevPixels[y] || minDb;
+          const decibelsB = this.pixels[y] || minDb;
+          const decibels = decibelsA * (1 - lerp) + decibelsB * lerp;
+          const color = getColor(decibels);
+          const pixelIndex = (y * slide + x) * 4;
+          this.currentImage.data[pixelIndex] = color[0];
+          this.currentImage.data[pixelIndex + 1] = color[1];
+          this.currentImage.data[pixelIndex + 2] = color[2];
+          this.currentImage.data[pixelIndex + 3] = color[3];
+        }
       }
       
+      this.prevPixels = Array.from(this.pixels);
       this.pixels = new Array(height).fill(minDb);
-      this.extraContext.putImageData(this.currentImage, width - 1, 0);
+      this.context.putImageData(this.currentImage, width - slide, 0);
     }
   }
 }
