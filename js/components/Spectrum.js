@@ -106,7 +106,7 @@ class Spectrum extends Component {
     const nyquist = 0.5;
     const minFreq = 5e-4;
     const maxFreq = nyquist;
-    const useEnhanced = !!this.settings.enhanced && useLog;
+    const useEnhanced = !!this.settings.enhanced;
 
     this.context.globalCompositeOperation = "copy";
     this.context.drawImage(this.extraCanvas, 0, 0, width, height);

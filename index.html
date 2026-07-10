@@ -2,75 +2,77 @@
 <html>
 
 <head>
-    <title>Wave-Candy</title>
-    <meta name="keywords" content="online, web, customizable, analyzer, waveform, frequency, spectrum, wavecandy, analyze, audio, sonogram, oscilloscope, vectorscope">
-    <meta name="description" content="Customizable Sonogram, Oscilloscope, and Vectorscope. Based on FL Studio's Wavecandy.">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
-    <link rel="stylesheet" href="./css/style.css">
+  <title>Wave-Candy</title>
+  <meta name="keywords"
+    content="online, web, customizable, analyzer, waveform, frequency, spectrum, wavecandy, analyze, audio, sonogram, oscilloscope, vectorscope">
+  <meta name="description"
+    content="Customizable Sonogram, Oscilloscope, and Vectorscope. Based on FL Studio's Wavecandy.">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PKZ9E5GZSE"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
   gtag('config', 'G-PKZ9E5GZSE');
 </script>
 
 <body>
-    <div style="font-size: 6em; font-weight: bold; margin-top: 0.2em;text-align: center;">Wave Candy</div>
-    <div style="font-size: 2em; margin-bottom: 1em;">Online</div>
-    <div id='init-device'>
-        <select id='audio-devices'>
-            <option value='desktop-audio'>Desktop Audio</option>
-        </select>
-        <button onclick='init()'>Start</button>
-    </div>
-    <div id='analyzer-settings' style='display: none'>
-        <div style='display:flex;flex-direction:row;align-items:stretch;width:100%;'>
-            <div class='settings-col'>
-                <div class='settings-title'>Preset</div>
-                <div style='margin-bottom: 0.3em;'>
-                    <button onclick='savePreset()'>Save</button>
-                    <button onclick='clearAll()'>Clear</button>
-                </div>
-                <div>
-                    <input type='file' id='load-preset-file' onchange='loadPresetFile()'>
-                </div>
-            </div>
-            <div class='settings-col'>
-                <div class='settings-title'>Add Component</div>
-                <div class='add-components'>
-                    <button onclick='add("Oscilloscope")'>Oscilloscope</button>
-                    <button onclick='add("Vectorscope")'>Vectorscope</button>
-                    <button onclick='add("Spectrum")'>Spectrum</button>
-                </div>
-            </div>
+  <div style="font-size: 6em; font-weight: bold; margin-top: 0.2em;text-align: center;">Wave Candy</div>
+  <div style="font-size: 2em; margin-bottom: 1em;">Online</div>
+  <div id='init-device'>
+    <select id='audio-devices'>
+      <option value='desktop-audio'>Desktop Audio</option>
+    </select>
+    <button onclick='init()'>Start</button>
+  </div>
+  <div id='analyzer-settings' style='display: none'>
+    <div style='display:flex;flex-direction:row;align-items:stretch;width:100%;'>
+      <div class='settings-col'>
+        <div class='settings-title'>Preset</div>
+        <div style='margin-bottom: 0.3em;'>
+          <button onclick='savePreset()'>Save</button>
+          <button onclick='clearAll()'>Clear</button>
         </div>
-        <div class='settings-row'>
-            <div class='settings-col'>
-                <div class='settings-title'>Selected Component</div>
-                <div id='selected-component'>
-                    None Selected
-                </div>
-            </div>
+        <div>
+          <input type='file' id='load-preset-file' onchange='loadPresetFile()'>
         </div>
+      </div>
+      <div class='settings-col'>
+        <div class='settings-title'>Add Component</div>
+        <div class='add-components'>
+          <button onclick='add("Oscilloscope")'>Oscilloscope</button>
+          <button onclick='add("Vectorscope")'>Vectorscope</button>
+          <button onclick='add("Spectrum")'>Spectrum</button>
+        </div>
+      </div>
     </div>
-    <div style="font-size:1.2em; position: fixed; bottom: 0.8em;color:#888">
-        Made by <a href="https://kaixo.me">Kaixo</a>
+    <div class='settings-row'>
+      <div class='settings-col'>
+        <div class='settings-title'>Selected Component</div>
+        <div id='selected-component'>
+          None Selected
+        </div>
+      </div>
     </div>
+  </div>
+  <div style="font-size:1.2em; position: fixed; bottom: 0.8em;color:#888">
+    Made by <a href="https://kaixo.me">Kaixo</a>
+  </div>
 
-    <script src='./js/processor.js'></script>
-    <script src='./js/components/Component.js'></script>
-    <script src='./js/components/Spectrum.js'></script>
-    <script src='./js/components/Oscilloscope.js'></script>
-    <script src='./js/components/Vectorscope.js'></script>
-    <script src='./js/template.js'></script>
-    <script src='./js/script.js'></script>
-    <template id='component-param' src="./templates/component.html"></template>
+  <script src='./js/processor.js'></script>
+  <script src='./js/components/Component.js'></script>
+  <script src='./js/components/Spectrum.js'></script>
+  <script src='./js/components/Oscilloscope.js'></script>
+  <script src='./js/components/Vectorscope.js'></script>
+  <script src='./js/template.js'></script>
+  <script src='./js/script.js'></script>
+  <template id='component-param' src="./templates/component.html"></template>
 </body>
 
 </html>
