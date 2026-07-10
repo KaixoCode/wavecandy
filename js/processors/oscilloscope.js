@@ -84,8 +84,22 @@ class Oscilloscope extends AudioWorkletProcessor {
           i++;
         }
       }
-      this.nextUpdate = this.update / 1000 * sampleRate;
-      this.port.postMessage({ left: { max: this.pLeftMax, min: this.pLeftMin }, right: { max: this.pRightMax, min: this.pRightMin } });
+
+      // Nof samples in update time frame + whatever we just overflowed in our current buffer.
+      const overflow = -this.nextUpdate;
+      const nofNewSamples = this.update / 1000 * sampleRate + overflow;
+      const advance = this.width * Math.min(1, nofNewSamples / this.bufferSize);
+      const actualAdvance = Math.floor(advance);
+      const missing = advance - actualAdvance;
+      const missingSamples = this.bufferSize * missing / this.width;
+
+      this.nextUpdate = this.update / 1000 * sampleRate - missingSamples;
+
+      this.port.postMessage({
+        advance: Math.ceil(advance),
+        left: { max: this.pLeftMax, min: this.pLeftMin },
+        right: { max: this.pRightMax, min: this.pRightMin }
+      });
     }
 
     return this.running;
