@@ -131,10 +131,11 @@ class Spectrum extends AudioWorkletProcessor {
       if (this.previousPhase[k] !== 0) {
         const phaseDiff = phase - this.previousPhase[k];
         const expectedPhaseAdvance = (2 * Math.PI * k * this.hopSize) / this.fftSize;
-        const phaseDeviation = phaseDiff - expectedPhaseAdvance;
-        const phaseDeviationWrapped = phaseDeviation % (2 * Math.PI);
+        let phaseDeviation = phaseDiff - expectedPhaseAdvance;
+        while (phaseDeviation > Math.PI) phaseDeviation -= 2 * Math.PI;
+        while (phaseDeviation < -Math.PI) phaseDeviation += 2 * Math.PI;
         
-        const actualFrequency = binCenter + phaseDeviationWrapped / (2 * Math.PI * this.hopSize);
+        const actualFrequency = binCenter + phaseDeviation / (2 * Math.PI * this.hopSize);
         frequencies[k] = actualFrequency;
       } else {
         frequencies[k] = binCenter;
