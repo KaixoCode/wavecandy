@@ -38,7 +38,6 @@ class Component {
     };
     // Add the node type to the processor
     processor.add(this, nodeType).then(node => {
-      console.log(this, nodeType, node);
       if (!node) return;
       this.node = node; // Store node
 

@@ -228,7 +228,6 @@ window.addEventListener('mousedown', event => {
 window.addEventListener('keydown', event => {
     const add = event.ctrlKey ? window.grid * 5 : window.grid;
     const resize = event.shiftKey;
-    console.log(event.key);
     if (event.key === "Escape") {
         deselectAll();
         window.onAnalyzerSelected(-1);
