@@ -16,85 +16,95 @@
     flex-basis: 200px;
   }
 </style>
+
 <div class='component-param'>
-  <div class='param-name'></div>
-  <input class='param-value'></input>
+  <div class="param-name" id='paramName'></div>
+  <input class="param-value" id='paramValue'></input>
 </div>
+
 <script>
-  const value = this.find('param-value');
-  const result = this.name.replace(/([A-Z])/g, " $1");
-  const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
-  this.find('param-name').innerText = finalResult;
-  const type = typeof this.value;
-  if (type == "boolean") {
-    value.type = "button";
-    value.style.maxWidth = "25px";
-    if (this.value) value.classList.add('active');
 
-    value.addEventListener('click', () => {
-      this.value = !this.value;
-      this.component.settings[this.name] = this.value;
-      this.component.updateSettings();
+  this.constructor = (data) => {
+    this.name = data.name;
+    this.component = data.component;
+    this.value = data.value;
+
+    const value = this.elements.paramValue;
+    const result = this.name.replace(/([A-Z])/g, " $1");
+    const finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+    this.elements.paramName.innerText = finalResult;
+
+    const type = typeof this.value;
+    if (type == "boolean") {
+      value.type = "button";
+      value.style.maxWidth = "25px";
       if (this.value) value.classList.add('active');
-      else value.classList.remove('active');
-    });
-  } else if (type == "number") {
-    value.type = "number";
-    value.value = this.value;
 
-    value.addEventListener('change', () => {
-      try {
-        this.component.settings[this.name] = JSON.parse(value.value);
-        this.value = this.component.settings[this.name];
+      value.addEventListener('click', () => {
+        this.value = !this.value;
+        this.component.settings[this.name] = this.value;
         this.component.updateSettings();
-      } catch (e) {
-        this.value = this.component.settings[this.name];
-        this.value = this.component.settings[this.name];
-        value.value = this.value;
-      }
-    });
-  } else if (type == "string") {
-    value.type = "color";
-    value.value = this.value;
+        if (this.value) value.classList.add('active');
+        else value.classList.remove('active');
+      });
+    } else if (type == "number") {
+      value.type = "number";
+      value.value = this.value;
 
-    value.addEventListener('input', () => {
-      try {
-        this.component.settings[this.name] = value.value;
-        this.value = this.component.settings[this.name];
-        this.component.updateSettings();
-      } catch (e) {
-        this.value = this.component.settings[this.name];
-        this.value = this.component.settings[this.name];
-        value.value = this.value;
-      }
-    });
-  } else if (type == "object") {
-    value.value = JSON.stringify(this.value);
+      value.addEventListener('change', () => {
+        try {
+          this.component.settings[this.name] = JSON.parse(value.value);
+          this.value = this.component.settings[this.name];
+          this.component.updateSettings();
+        } catch (e) {
+          this.value = this.component.settings[this.name];
+          this.value = this.component.settings[this.name];
+          value.value = this.value;
+        }
+      });
+    } else if (type == "string") {
+      value.type = "color";
+      value.value = this.value;
 
-    value.addEventListener('change', () => {
-      try {
-        this.component.settings[this.name] = JSON.parse(value.value);
-        this.value = this.component.settings[this.name];
-        this.component.updateSettings();
-      } catch (e) {
-        this.value = this.component.settings[this.name];
-        this.value = this.component.settings[this.name];
-        value.value = JSON.stringify(this.value);
-      }
-    });
-  } else {
-    value.value = JSON.stringify(this.value);
+      value.addEventListener('input', () => {
+        try {
+          this.component.settings[this.name] = value.value;
+          this.value = this.component.settings[this.name];
+          this.component.updateSettings();
+        } catch (e) {
+          this.value = this.component.settings[this.name];
+          this.value = this.component.settings[this.name];
+          value.value = this.value;
+        }
+      });
+    } else if (type == "object") {
+      value.value = JSON.stringify(this.value);
 
-    value.addEventListener('change', () => {
-      try {
-        this.component.settings[this.name] = JSON.parse(value.value);
-        this.value = this.component.settings[this.name];
-        this.component.updateSettings();
-      } catch (e) {
-        this.value = this.component.settings[this.name];
-        this.value = this.component.settings[this.name];
-        value.value = JSON.stringify(this.value);
-      }
-    });
+      value.addEventListener('change', () => {
+        try {
+          this.component.settings[this.name] = JSON.parse(value.value);
+          this.value = this.component.settings[this.name];
+          this.component.updateSettings();
+        } catch (e) {
+          this.value = this.component.settings[this.name];
+          this.value = this.component.settings[this.name];
+          value.value = JSON.stringify(this.value);
+        }
+      });
+    } else {
+      value.value = JSON.stringify(this.value);
+
+      value.addEventListener('change', () => {
+        try {
+          this.component.settings[this.name] = JSON.parse(value.value);
+          this.value = this.component.settings[this.name];
+          this.component.updateSettings();
+        } catch (e) {
+          this.value = this.component.settings[this.name];
+          this.value = this.component.settings[this.name];
+          value.value = JSON.stringify(this.value);
+        }
+      });
+    }
   }
 </script>
