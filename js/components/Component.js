@@ -23,7 +23,7 @@ class Component {
     // Create the canvas to draw on
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
-    this.element.appendChild(this.canvas)
+    this.element.appendChild(this.canvas);
     this.canvas.width = position[2];
     this.canvas.height = position[3];
     // When the element is resized, the canvas should also resize

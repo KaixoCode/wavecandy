@@ -22,10 +22,6 @@ function intensityToColor(intensity, colors) {
   return res;
 }
 
-function toLog(value, min, max) {
-  return min * Math.pow(max / min, (value - min) / (max - min));
-}
-
 class Spectrum extends Component {
   constructor(processor, position, settings) {
     super(processor, position, settings, "spectrum", false);
@@ -59,8 +55,6 @@ class Spectrum extends Component {
     };
 
     this.oversampleCounter = 0;
-
-    this.drawCursor = 0;
     this.updateColorLookup();
   }
 
@@ -93,10 +87,9 @@ class Spectrum extends Component {
     const minDb = this.settings.range;
     const maxDb = 0;
     const binCount = magnitudes.length;
-    const useLog = !!this.settings.log;
+    const log = !!this.settings.log;
+    const f0 = 1e-3;
     const nyquist = 0.5;
-    const minFreq = 5e-4;
-    const maxFreq = nyquist;
     const useEnhanced = !!this.settings.enhanced;
     const slide = this.settings.slide;
 
@@ -118,7 +111,7 @@ class Spectrum extends Component {
     };
 
     const frequencyWeight = (frequency) => {
-      const weight_dB = 3 * Math.log2(frequency / 2e-3);
+      const weight_dB = 3 * Math.log2(frequency / 1e-3);
       return weight_dB;
     }
 
@@ -138,54 +131,41 @@ class Spectrum extends Component {
     const yToFrequency = (y) => {
       const h = Math.max(1, height - 1);
       const t = (h - y) / h;
-
-      if (useLog) {
-        const minLog = Math.log(minFreq);
-        const maxLog = Math.log(maxFreq);
-
-        return Math.exp(minLog + t * (maxLog - minLog));
-      } else {
-        return t * nyquist;
-      }
+      
+      const logPos = f0 * (Math.pow((nyquist + f0) / f0, t) - 1);
+      const linPos = nyquist * t;
+      
+      return linPos * (1 - log) + logPos * log;
     }
 
     const frequencyToY = (freq) => {
       const h = Math.max(1.0, height - 1.0);
-      freq = clamp(freq, 5e-4, nyquist);
+      freq = clamp(freq, 0, nyquist);
 
-      if (useLog) {
-        const minLog = Math.log(minFreq);
-        const maxLog = Math.log(maxFreq);
+      const logPos = Math.log(freq / f0 + 1) / Math.log((nyquist + f0) / f0);
+      const linPos = freq / nyquist;
 
-        const t = (Math.log(freq) - minLog) / (maxLog - minLog);
-        return h - t * h;
-      } else {
-        const t = freq / nyquist;
-        return h - t * h;
-      }
-    }
-
-    const drawOne = (frequency, magnitude, opacity = 1) => {
-      const y = frequencyToY(frequency);
-      const y1 = Math.floor(y);
-      const y2 = Math.ceil(y);
-      const lerp = y - y1;
-
-      const linear = Math.pow(10, (magnitude + frequencyWeight(frequency)) / 20);
-
-      const m1 = 20 * Math.log10(linear * (1 - lerp) * opacity);
-      const m2 = 20 * Math.log10(linear * lerp * opacity);
-
-      drawPixel(y1, m1);
-      drawPixel(y2, m2);
+      const t = linPos * (1 - log) + logPos * log;
+      return h - t * h;
     }
 
     if (useEnhanced) {
       for (let k = 0; k < binCount; ++k) {
         const frequency = frequencies[k];
-        const magnitude = magnitudes[k];
+        const magnitude = magnitudes[k] + frequencyWeight(frequency);
 
-        drawOne(frequency, magnitude);
+        const y = frequencyToY(frequency);
+        const y1 = Math.floor(y);
+        const y2 = Math.ceil(y);
+        const lerp = y - y1;
+
+        const linear = Math.pow(10, magnitude / 20);
+
+        const m1 = 20 * Math.log10(linear * (1 - lerp));
+        const m2 = 20 * Math.log10(linear * lerp);
+
+        drawPixel(y1, m1);
+        drawPixel(y2, m2);
       }
     } else {
       for (let y = 0; y < height; ++y) {
